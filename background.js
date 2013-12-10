@@ -1,12 +1,12 @@
 //http://developer.chrome.com/extensions/declare_permissions.html
-//notification for errors
+//notification about errors
 function alertNotification(message){
 	var notification = webkitNotifications.createNotification('','Warning',message);
 	notification.show();
 	setTimeout(function(){notification.cancel()}, 2000)
 }
 
-//notification for new issue
+//notification about new issue
 function showNotification(issue){
 // http://developer.chrome.com/extensions/notifications.html	
 	opt = {
@@ -15,7 +15,7 @@ function showNotification(issue){
 		message: "",
 		buttons:[{title:'Open',iconUrl:''}],
 //		contextMessage:'',
-//		icon from manifest.json
+//		get icon from manifest.json
 		iconUrl: chrome.app.getDetails().icons[48],
 	}
 
@@ -65,8 +65,6 @@ function utensils(a,b){
 function findNew(new_issue, old_issue){
 	
 	var result = []
-	// check for olf_issue moved to refresh()
-	//if (old_issue.length == 0) {return result}
 	for (var i = 0, l = new_issue.length; i < l; i++){
 		if (utensils(new_issue[i],old_issue)== false){
 			result.push(new_issue[i])
