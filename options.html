@@ -1,0 +1,46 @@
+<html>
+<head><title>Redmine Notificator options</title></head>
+<style>
+	img{width: 100%}
+	input{
+		display: inline-block;
+		width: 45%;
+		font-family: sans-serif; 
+		font-size: 1em;
+		border: 1px solid #BBB;
+		margin: .3em 0;
+		padding: .4em;
+	}
+	body {
+		padding: 1em;
+		font-family: sans-serif; 
+		font-size: 1em
+	}
+	label{width: 15%;
+			text-align: left; padding: .4em 0;display: inline-block;
+	}
+	#logo{display: block; width: 60%;clear: both;margin-bottom: .5em}
+	button{border:1px solid black;padding: .5em 1em}
+</style>
+<body>
+<a id='logo' href="http://www.redmine.org/projects/redmine/wiki/Rest_api">
+	<img src="img/redmine_logo.png">
+</a>
+
+<label for="url">URL:</label><input type="text" id='url' placeholder='http://pathto.redmine.com' list="redmine_servers"><br>
+<label for="key">API key:</label><input type="text" id='key' required><br>
+<label for="limit">Limit:</label><input type="text" id='limit'><br>
+<label for="assigned_to_id">Assigned to id:</label><input type="text" id='assigned_to_id'><br>
+<label for="status_id">Status id:</label><input type="text" id='status_id'><br>
+<label for="project_id">Project id:</label><input type="text" id='project_id'><br>
+
+<div id="info"></div>
+<button id="save">Save</button>
+
+<datalist id="redmine_servers">
+</datalist>
+</body>
+
+<script src="options.js"></script>
+
+</html>

@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Issues</title>
+<!--<script charset="UTF-8" type="text/javascript" src="jquery-1.7.1.min.js"></script> -->
+<style>
+BODY {
+	margin: 0 0 0 0;
+	/*margin: 0 18px 0 0;*/
+	padding: 0;
+	background-color: white;
+	font: 13px Arial, sans-serif;
+	color: #333;
+	width: 350px;
+	height: 600px;
+	border: 0;
+}
+#pattern{display: none}
+
+a{text-decoration: none; color:black;}
+a:hover{text-decoration: underline;}
+
+.issue{
+	display: inline-block;
+	width: 330px;
+	min-height: 4em; 
+	margin-bottom: .5em;
+	padding: .5em; 
+	border: 1px solid black;
+	text-decoration: none; 
+	color:black;
+	background-color: #faf8eb;
+	cursor:default;}
+.second_page{display: none}
+.first_page{display: inline}
+subject{display: inline-block; font-size: 1.3em; margin: .5em 0 0 0; clear:both;}
+issueid, author, created_on{display:inline-block;float:left;}
+status, assign, updated_on{display:inline-block;float:right;}
+project{display: inline-block;width: 100%;text-align: right;}
+issueid{margin-right: 1em;}
+description{display:inline-block; white-space: pre-line; margin: 1em 0; clear:both; width: 100%;}
+hr{color: #444; margin: 2px;clear:both;}
+status{border: 1px solid #BBB;background-color: #FFF;padding: 0 4px}
+
+</style>
+<meta charset="utf-8"/>
+</head>
+
+<body>
+<div id="one"></div>
+<div id="pattern">
+	<div class="first_page">
+		<issueid><a target="_blank" href="{{url}}/{{id}}"><b>{{tracker}} # {{id}}</b></a></issueid>
+		<status>{{status}}</status><br>
+		<subject>{{subject}}</subject>
+		<project>{{project}}</project>
+		<hr>
+		<author>{{author}}</author>
+		<assign>{{assigned_to}}</assign>
+	</div>
+	<div class="second_page">		
+		<issueid><a target="_blank" href="{{url}}/{{id}}"><b>{{tracker}} # {{id}}</b></a></issueid> 
+		<status>{{status}}</status>
+		<description>{{description}}</description>
+		<hr>
+		<created_on>{{created_on}}</created_on>
+		<updated_on>{{updated_on}}</updated_on>
+		
+	</div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+    "name":"Redmine Notificator",
+    "version":"1.5",
+    "manifest_version":2,
+    "description":"Redmine Notificator",
+    "background":{
+        "scripts":["jquery-1.7.1.min.js", "background.js"]
+    },
+    "icons":{
+        "128":"img/redmine_fluid_icon.png",
+        "48":"img/redmine_fluid_icon.png"
+    },
+    "options_page": "options.html",
+    "browser_action":{
+        "default_title":"Redmine notificator",
+        "default_icon":"img/redmine_fluid_icon.png",
+        "default_popup":"popup.html"
+    },
+    "permissions":[
+        "tabs",
+        "contextMenus",
+        "notifications",
+        "http://*/"
+    ]
+}
