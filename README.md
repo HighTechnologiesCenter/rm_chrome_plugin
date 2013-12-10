@@ -8,3 +8,6 @@ http://www.redmine.org/projects/redmine/wiki/Rest_api
 
 Notifications in Chrome Extentions
 http://developer.chrome.com/extensions/notifications.html
+
+Load the extension
+http://developer.chrome.com/extensions/getstarted.html
