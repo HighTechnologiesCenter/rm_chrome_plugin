@@ -16,7 +16,7 @@ function valuesFromIssue(issue){
 				'url':      url,
 				};
 	if (issue.assigned_to){
-	    			values['assigned_to'] = issue.assigned_to.name
+	    values['assigned_to'] = issue.assigned_to.name
 	};
 	return values
 }
@@ -28,14 +28,15 @@ function pageToggle(issue){
 	if (second_page.style.display == 'none'){
 		first_page.style.display = 'none';
 		second_page.style.display = 'inline'
-	}else{
+	}
+	else{
 		first_page.style.display = 'inline';
 		second_page.style.display = 'none'
 	}
 }
 function when_load(){
 		var pattern1 = document.getElementById('pattern').innerHTML.trim();
-		var temp_issues =  chrome.extension.getBackgroundPage().temp_issues;
+		var temp_issues =  chrome.extension.getBackgroundPage().issues.all;
 		var j = document.getElementById('one');
     	for (var i = 0;i < 25;i++){	
 	    		if(temp_issues[i]){	

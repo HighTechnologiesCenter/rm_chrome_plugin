@@ -31,9 +31,7 @@ a:hover{text-decoration: underline;}
 	color:black;
 	background-color: #faf8eb;
 	cursor:default;}
-.second_page{display: none}
-.first_page{display: inline}
-subject{display: inline-block; font-size: 1.3em; margin: .5em 0 0 0; clear:both;}
+subject{display: inline-block; font-size: 1.3em; margin: .5em 0 .5em 0; clear:both;}
 issueid, author, created_on{display:inline-block;float:left;}
 status, assign, updated_on{display:inline-block;float:right;}
 project{display: inline-block;width: 100%;text-align: right;}
@@ -49,7 +47,7 @@ status{border: 1px solid #BBB;background-color: #FFF;padding: 0 4px}
 <body>
 <div id="one"></div>
 <div id="pattern">
-	<div class="first_page">
+	<div class="first_page" style="display: inline;">
 		<issueid><a target="_blank" href="{{url}}/{{id}}"><b>{{tracker}} # {{id}}</b></a></issueid>
 		<status>{{status}}</status><br>
 		<subject>{{subject}}</subject>
@@ -58,7 +56,7 @@ status{border: 1px solid #BBB;background-color: #FFF;padding: 0 4px}
 		<author>{{author}}</author>
 		<assign>{{assigned_to}}</assign>
 	</div>
-	<div class="second_page">		
+	<div class="second_page" style="display: none;">		
 		<issueid><a target="_blank" href="{{url}}/{{id}}"><b>{{tracker}} # {{id}}</b></a></issueid> 
 		<status>{{status}}</status>
 		<description>{{description}}</description>

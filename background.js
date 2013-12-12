@@ -1,23 +1,28 @@
 //http://developer.chrome.com/extensions/declare_permissions.html
-//notification about errors
+// Make button on Notification clickable  
+chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
+	var server_url = localStorage["url"].split('.json')[0]
+	chrome.tabs.create({url: server_url+'/'+notificationId})
+}
+)
+// notification for errors
 function alertNotification(message){
 	var notification = webkitNotifications.createNotification('','Warning',message);
 	notification.show();
-	setTimeout(function(){notification.cancel()}, 2000)
+	setTimeout(function(){notification.cancel()}, 5000)
 }
 
-//notification about new issue
+//notification for new issue
 function showNotification(issue){
 // http://developer.chrome.com/extensions/notifications.html	
-	opt = {
-		type: "basic",
-		title: '#'+issue.id+' '+issue.subject.toString()+'('+issue.project['name']+')',
-		message: "",
-		buttons:[{title:'Open',iconUrl:''}],
-//		contextMessage:'',
-//		get icon from manifest.json
-		iconUrl: chrome.app.getDetails().icons[48],
-	}
+	opt = {}
+	opt.type = "basic"
+	opt.title = '#'+issue.id+' '+issue.subject.toString()+'('+issue.project['name']+')'
+	opt.message = ""
+	opt.buttons = [{title:'Open',iconUrl:''}]
+//	opt.contextMessage:'',
+//		icon from manifest.json
+	opt.iconUrl = chrome.app.getDetails().icons[48]
 
 //	var body = ''
 	if (issue.author) {
@@ -37,6 +42,7 @@ function showNotification(issue){
 		issue.id.toString(), 
 		opt ,
 		function(){
+// :: delete showed notification
 		//	setTimeout(function(){
 		//		chrome.notifications.clear(
 		//			issue.id.toString(),
@@ -72,41 +78,50 @@ function findNew(new_issue, old_issue){
 	}
 	return result
 }
-//-------------------------------------------------------
-function refresh() {
-	var redmine_url = localStorage["url"];
-	if (!redmine_url) {
+//---------------------------------------------------------
+
+issues = new Object()
+issues.all = []
+issues.redmine_url = localStorage["url"]
+
+// check that settings(url) is changed
+issues.isUrlChanged = function(){
+	if (this.redmine_url != localStorage["url"]){
+		this.redmine_url = localStorage["url"]
+		return true
+		
+	}
+	return false
+}
+// Show all new issues and refresh issues.all
+issues.showNew = function(fresh_issues){
+	if (this.all.length != 0||this.isUrlChanged == false ){ 
+		var new_issues = findNew(fresh_issues.issues, this.all);
+		for (var i = 0, l = new_issues.length; i < l; i++){
+			showNotification(new_issues[i]);
+		};
+	};
+	this.all = fresh_issues.issues;
+}
+// Download new issues and show all new.
+issues.getNewAndShow = function(){
+	if (!this.redmine_url&&this.isUrlChanged == false) {
 		alertNotification('You must fill URL field in settings');
 		return
 	};
-	// get issue list, compare old and new list, show notification
-    $.ajax({
-        url:redmine_url,
-        dataType:"json",
-        success: function (json) {
-        	if (temp_issues.length != 0){
-           		var new_issues = findNew(json.issues, temp_issues);
+    var request_get = {};
+    request_get.url = this.redmine_url;
+    request_get.dataType = "json";
+    request_get.success = function(json){ issues.showNew(json) };
+    
+    $.ajax(request_get).fail(function(){
+    	alertNotification('Can\'t connect to '+this.redmine_url)
+    });	       	
 
-	        	for (var i = 0, l = new_issues.length; i < l; i++){
-	            	showNotification(new_issues[i]);
-	            };
-			};
-	       	temp_issues = json.issues;
+}
 
-        }
-    }).fail(function(){
-    	alert('Can\'t connect to '+redmine_url)
-    });
-}
-//-------------------------------------------------------------------
-var temp_issues = []
-chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
-	var server_url = localStorage["url"].split('.json')[0]
-	chrome.tabs.create({url: server_url+'/'+notificationId})
-}
-)
-refresh();
-setInterval(function(){refresh()},60000);
+issues.getNewAndShow()
+setInterval(function(){issues.getNewAndShow()},60000);
 
 //--------------------------------------------------
 // pattern: 'some string {{variable_name}} some string'
