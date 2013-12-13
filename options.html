@@ -2,6 +2,8 @@
 <head><title>Redmine Notificator options</title></head>
 <style>
 	img{width: 100%}
+
+	settings{display: inline-block;width: 60%}
 	input{
 		display: inline-block;
 		width: 70%;
@@ -11,10 +13,7 @@
 		margin: .3em 0;
 		padding: .4em;
 	}
-	#left{display: inline-block; width: 60%; }
-	#right{display: block; width: 60%;}
-	#right > name {display:inline-block; width: 23%}
-	#right > nameid {display:inline-block; width: 3%;padding: 0 1em;}
+
 	body {
 		padding: 1em;
 		font-family: sans-serif; 
@@ -23,29 +22,24 @@
 	label{width: 30%;
 			text-align: left; padding: .4em 0;display: inline-block;
 	}
-	#logo{display: block; width: 100%;clear: both;margin-bottom: .5em}
-	button{border:1px solid black;padding: .5em 1em}
+	#logo{display: block; width:60%; clear:both; margin-bottom: .5em;}
+	button{border:1px solid black;padding: 1em 2em;float: right}
 </style>
 <body>
-<div id="left">
-	<a id='logo' href="http://www.redmine.org/projects/redmine/wiki/Rest_api">
-		<img src="img/redmine_logo.png">
-	</a>
-	
+<a id='logo' href="http://www.redmine.org/projects/redmine/wiki/Rest_api">
+	<img src="img/redmine_logo.png">
+</a>
+<settings>
 	<label for="url">URL:</label><input type="text" id='url' placeholder='http://pathto.redmine.com' list="redmine_servers"><br>
 	<label for="key">API key:</label><input type="text" id='key' required><br>
 	<label for="limit">Limit:</label><input type="text" id='limit'><br>
-	<label for="assigned_to_id" id='show_name'>Assigned to id:</label><input type="text" id='assigned_to_id'><br>
-	<label for="status_id" id='show_status'>Status id:</label><input type="text" id='status_id'><br>
-	<label for="project_id" id='show_projects'>Project id:</label><input type="text" id='project_id'><br>
-	
+	<label for="assigned_to_id">Assigned to id:</label><input type="text" id='assigned_to_id'><br>
+	<label for="status_id">Status id:</label><input type="text" id='status_id'><br>
+	<label for="project_id">Project id:</label><input type="text" id='project_id'><br>
 	<div id="info"></div>
 	<button id="save">Save</button>
-</div>
-<div id="right"></div>
+</settings>
 
-<datalist id="redmine_servers">
-</datalist>
 </body>
 
 <script src="options.js"></script>

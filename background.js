@@ -84,59 +84,37 @@ issues = new Object()
 issues.all = []
 issues.redmine_url = localStorage["url"]
 
-// check that settings(url) is changed
-issues.isUrlChanged = function(){
-	if (this.redmine_url != localStorage["url"]){
-		this.redmine_url = localStorage["url"]
-		return true
-		
-	}
-	return false
-}
 // Show all new issues and refresh issues.all
 issues.showNew = function(fresh_issues){
-	if (this.all.length != 0||this.isUrlChanged == false ){ 
-		var new_issues = findNew(fresh_issues.issues, this.all);
+	if (this.redmine_url != localStorage["url"]){
+		this.redmine_url = localStorage["url"];
+		this.all = fresh_issues;
+		return
+	}
+	if (this.all.length != 0){ 
+		var new_issues = findNew(fresh_issues, this.all);
 		for (var i = 0, l = new_issues.length; i < l; i++){
 			showNotification(new_issues[i]);
 		};
 	};
-	this.all = fresh_issues.issues;
+	this.all = fresh_issues;
 }
 // Download new issues and show all new.
 issues.getNewAndShow = function(){
-	if (!this.redmine_url&&this.isUrlChanged == false) {
+	if (!localStorage["url"]) {
 		alertNotification('You must fill URL field in settings');
 		return
 	};
-    var request_get = {};
-    request_get.url = this.redmine_url;
+
+	var request_get = {};
+    request_get.url = localStorage["url"];
     request_get.dataType = "json";
-    request_get.success = function(json){ issues.showNew(json) };
+    request_get.success = function(json){ issues.showNew(json.issues) };
     
     $.ajax(request_get).fail(function(){
-    	alertNotification('Can\'t connect to '+this.redmine_url)
+    	alertNotification('Can\'t connect to '+request_get.url)
     });	       	
-
 }
 
 issues.getNewAndShow()
 setInterval(function(){issues.getNewAndShow()},60000);
-
-//--------------------------------------------------
-// pattern: 'some string {{variable_name}} some string'
-// values: {variable_name:variable value}
-function formatString(pattern, values){
-	var split_pattern = pattern.split('}}');
-	var result = '';
-	for(i = 0,l=split_pattern.length-1; i<l; i++){
-		var parts = split_pattern[i].split('{{')
-		if(values[parts[1]]){
-			result += parts[0] + values[parts[1]]
-		}else{
-			result += parts[0]
-		};
-	};
-	result += split_pattern[split_pattern.length-1];
-	return result
-}

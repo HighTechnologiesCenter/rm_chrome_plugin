@@ -1,4 +1,21 @@
-formatString = chrome.extension.getBackgroundPage().formatString
+//--------------------------------------------------
+// pattern: 'some string {{variable_name}} some string'
+// values: {variable_name:variable value}
+function formatString(pattern, values){
+	var split_pattern = pattern.split('}}');
+	var result = '';
+	for(i = 0,l=split_pattern.length-1; i<l; i++){
+		var parts = split_pattern[i].split('{{')
+		if(values[parts[1]]){
+			result += parts[0] + values[parts[1]]
+		}else{
+			result += parts[0]
+		};
+	};
+	result += split_pattern[split_pattern.length-1];
+	return result
+}
+
 var url = (localStorage["url"]||'.json?').split('.json?')[0]
 
 // values for format string from issue object
