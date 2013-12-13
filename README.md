@@ -6,10 +6,12 @@ Plugin settings:
 **URL:** url to your redmine server  
 **Api Key:** You can find your API key on your Redmine account page ( /my/account ) when logged in, on the right-hand pane of the default layout.  
 **limit:** number of loaded issues  
-**project_id:** get issues from the project with the given id, where id is either project id or project identifier<br>
-**tracker_id:** get issues from the tracker with the given id  
-**status_id:** get issues with the given status id only. Possible values: open, closed, * to get open and closed issues, status id  
-**assigned_to_id:** get issues which are assigned to the given user id  
+Filter notifications by:  
+**Assigned to:** user names divided by comma
+**Status:** statuses divided by comma
+**Project:** projects divided by comma
+**Author:** authors divided by comma
+**Tracker:  ** trackers divided by comma
 
 Useful links:  
 Redmine API
