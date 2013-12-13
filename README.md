@@ -7,12 +7,12 @@ Plugin settings:
 **Api Key:** You can find your API key on your Redmine account page ( /my/account ) when logged in, on the right-hand pane of the default layout.  
 **limit:** number of loaded issues  
 Filter notifications by:  
-**Assigned to:** user names divided by comma
-**Status:** statuses divided by comma
-**Project:** projects divided by comma
-**Author:** authors divided by comma
-**Tracker:  ** trackers divided by comma
-
+**Assigned to:** user names divided by comma  
+**Status:** statuses divided by comma  
+**Project:** projects divided by comma  
+**Author:** authors divided by comma  
+**Tracker:** trackers divided by comma  
+  
 Useful links:  
 Redmine API
 http://www.redmine.org/projects/redmine/wiki/Rest_api  
