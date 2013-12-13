@@ -2,9 +2,11 @@ function save_options() {
   var url = document.getElementById("url").value.trim();
   var key = document.getElementById("key").value.trim();
   var limit = document.getElementById("limit").value.trim();
-  var assigned_to_id = document.getElementById("assigned_to_id").value.trim();
-  var status_id = document.getElementById("status_id").value.trim();
-  var project_id = document.getElementById("project_id").value.trim();
+  var assigned_to_id = document.getElementById("assigned_to").value.trim();
+  var status_id = document.getElementById("status").value.trim();
+  var project_id = document.getElementById("project").value.trim();
+  var author = document.getElementById("author").value.trim();
+  var tracker = document.getElementById("tracker").value.trim();
 
   var status = document.getElementById("info");
   result = ''
@@ -24,15 +26,11 @@ function save_options() {
   if (limit){
     result += '&limit='+limit
   };
-  if (assigned_to_id){
-    result += '&assigned_to_id='+assigned_to_id
-  };
-  if (status_id){
-    result += '&status_id='+status_id
-  };
-  if (project_id){
-    result += '&project_id='+project_id
-  };
+  localStorage["assigned_to_id"] = assigned_to_id
+  localStorage["status"] = status_id
+  localStorage["project"] = project_id
+  localStorage["author"] = author
+  localStorage["tracker"] = tracker
 
   result += '&sort=updated_on:desc'
   localStorage["url"] = result;
@@ -49,28 +47,23 @@ function restore_options() {
   if (!rm_url) {
     return;
   }
-
-  var url = document.getElementById("url");
-  var fields = {
-    'key':document.getElementById("key"),
-    'limit':document.getElementById("limit"),
-    'assigned_to_id':document.getElementById("assigned_to_id"),
-    'status_id':document.getElementById("status_id"),
-    'project_id': document.getElementById("project_id")
-  };
-
-
+  
   var head = rm_url.split('/issues.json?')[0];
   var splited_tail = rm_url.split('?')[1].split('&');
+  var param_from_url = {}
+  for (i in splited_tail){
+    param_from_url[splited_tail[i].split('=')[0]] = splited_tail[i].split('=')[1]
+  }
+  document.getElementById("key").value = param_from_url["key"] || ''
+  document.getElementById("limit").value = param_from_url["limit"] || ''
 
-  for (i=0, l=splited_tail.length; i<l; i++){
-    var key = splited_tail[i].split('=')[0];
-    var value = splited_tail[i].split('=')[1]; 
-    if (fields[key]){
-      fields[key]['value']  = value
-    };
-  };
-  url['value'] = head
+  document.getElementById("url").value = head
+  document.getElementById("assigned_to").value = localStorage["assigned_to"]||''
+  document.getElementById("status").value = localStorage["status"]||''
+  document.getElementById("project").value = localStorage["project"]||''
+  document.getElementById("author").value = localStorage["author"]||''
+  document.getElementById("tracker").value = localStorage["tracker"]||''
+
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);

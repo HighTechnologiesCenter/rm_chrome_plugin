@@ -14,7 +14,8 @@ function alertNotification(message){
 
 //notification for new issue
 function showNotification(issue){
-// http://developer.chrome.com/extensions/notifications.html	
+// http://developer.chrome.com/extensions/notifications.html
+	if(!isShowing(issue)){return}	
 	opt = {}
 	opt.type = "basic"
 	opt.title = '#'+issue.id+' '+issue.subject.toString()+'('+issue.project['name']+')'
@@ -53,8 +54,50 @@ function showNotification(issue){
 			
 		}
 	) 
+}
+//=================== filter =======================
+function valuesFromIssue(issue){
+	var values = {'project':issue.project.name,
+	   			'tracker':  issue.tracker.name,
+			//	'id':       issue.id.toString(),
+			//	'subject':  issue.subject,
+				'status':   issue.status.name,
+				'author':   issue.author.name,
+			//	'description':issue.description,
+			//	'updated_on': new Date(issue.updated_on).toLocaleString(),
+			//	'created_on': new Date(issue.created_on).toLocaleString(),
+				'assigned_to':'',
+				};
+	if (issue.assigned_to){
+	    values['assigned_to'] = issue.assigned_to.name
+	};
+	return values
+}
 
+function issueFilter(filter_name, filtering_value){
+	if ( localStorage[filter_name]){
+		filter_words = localStorage[filter_name].toLowerCase().split(',');
+		for (n in filter_words){
+			if (filtering_value.toLowerCase().search(filter_words[n].trim())>-1){
+				return true
+			}
+		}
+		return false
+	}
+	return true
+}
 
+function isShowing(issue){
+	var filters = valuesFromIssue(issue)
+	for (filter in filters){
+		filter_name = filter;
+		filtering_value = filters[filter]
+
+		if(!issueFilter(filter_name, filtering_value)){
+			return false
+		}
+	}
+	return true
 }
 //============================================================
 // Check that object a is in list of object b
@@ -102,7 +145,7 @@ issues.showNew = function(fresh_issues){
 // Download new issues and show all new.
 issues.getNewAndShow = function(){
 	if (!localStorage["url"]) {
-		alertNotification('You must fill URL field in settings');
+		//alertNotification('You must fill URL field in settings');
 		return
 	};
 
