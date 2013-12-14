@@ -2,7 +2,7 @@ function save_options() {
   var url = document.getElementById("url").value.trim();
   var key = document.getElementById("key").value.trim();
   var limit = document.getElementById("limit").value.trim();
-  var assigned_to_id = document.getElementById("assigned_to").value.trim();
+  var assigned_to = document.getElementById("assigned_to").value.trim();
   var status_id = document.getElementById("status").value.trim();
   var project_id = document.getElementById("project").value.trim();
   var author = document.getElementById("author").value.trim();
@@ -26,13 +26,13 @@ function save_options() {
   if (limit){
     result += '&limit='+limit
   };
-  localStorage["assigned_to_id"] = assigned_to_id
+  localStorage["assigned_to"] = assigned_to
   localStorage["status"] = status_id
   localStorage["project"] = project_id
   localStorage["author"] = author
   localStorage["tracker"] = tracker
 
-  result += '&sort=updated_on:desc'
+  result += '&status_id=*&sort=updated_on:desc'
   localStorage["url"] = result;
 
   // Update status to let user know options were saved.
