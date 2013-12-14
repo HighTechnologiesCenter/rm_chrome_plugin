@@ -4,7 +4,7 @@
     "manifest_version":2,
     "description":"Redmine Notificator",
     "background":{
-        "scripts":["jquery-1.7.1.min.js", "background.js"]
+        "scripts":["background.js"]
     },
     "icons":{
         "128":"img/redmine_fluid_icon.png",
@@ -18,7 +18,6 @@
     },
     "permissions":[
         "tabs",
-        "contextMenus",
         "notifications",
         "http://*/"
     ]
