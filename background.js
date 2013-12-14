@@ -15,7 +15,7 @@ function alertNotification(message){
 //notification for new issue
 function showNotification(issue){
 // http://developer.chrome.com/extensions/notifications.html
-	if(!isShowing(issue)){return}	
+	if(isMustShow(issue) == false){return}	
 	opt = {}
 	opt.type = "basic"
 	opt.title = '#'+issue.id+' '+issue.subject.toString()+'('+issue.project['name']+')'
@@ -26,33 +26,17 @@ function showNotification(issue){
 	opt.iconUrl = chrome.app.getDetails().icons[48]
 
 //	var body = ''
-	if (issue.author) {
     opt.message += 'Author: '+issue.author['name']
-  	}
-	if (issue.status) {
     opt.message += '\nStatus: '+issue.status['name']
-  	}
 	if (issue.assigned_to) {
     opt.message += '\nAssigned: '+issue.assigned_to['name']	
   	}
-	if (issue.updated_on) {
     opt.message += '\nUpdated: '+ new Date(issue.updated_on).toLocaleString()	
-  	}
 
 	notification = chrome.notifications.create(
 		issue.id.toString(), 
 		opt ,
-		function(){
-// :: delete showed notification
-		//	setTimeout(function(){
-		//		chrome.notifications.clear(
-		//			issue.id.toString(),
-		//			function(){}
-		//		)},
-		//		10000
-		//	)
-			
-		}
+		function(){}
 	) 
 }
 //=================== filter =======================
@@ -74,7 +58,7 @@ function valuesFromIssue(issue){
 	return values
 }
 
-function issueFilter(filter_name, filtering_value){
+function isFilteredBy(filter_name, filtering_value){
 	if ( localStorage[filter_name]){
 		filter_words = localStorage[filter_name].toLowerCase().split(',');
 		for (n in filter_words){
@@ -87,13 +71,10 @@ function issueFilter(filter_name, filtering_value){
 	return true
 }
 
-function isShowing(issue){
+function isMustShow(issue){
 	var filters = valuesFromIssue(issue)
-	for (filter in filters){
-		filter_name = filter;
-		filtering_value = filters[filter]
-
-		if(!issueFilter(filter_name, filtering_value)){
+	for (filter_name in filters){
+		if(!isFilteredBy(filter_name, filters[filter_name])){
 			return false
 		}
 	}
@@ -101,7 +82,7 @@ function isShowing(issue){
 }
 //============================================================
 // Check that object a is in list of object b
-function utensils(a,b){
+function isContains(a,b){
 	for (var i = 0, l = b.length; i < l; i++){
 		if (a.id == b[i].id&&a.updated_on==b[i].updated_on){
 			return true
@@ -111,12 +92,12 @@ function utensils(a,b){
 }
 //-------------------------------------------------------
 // Find difference for list:new_issue and list:old_issue
-function findNew(new_issue, old_issue){
+function findNew(new_list, old_list){
 	
 	var result = []
-	for (var i = 0, l = new_issue.length; i < l; i++){
-		if (utensils(new_issue[i],old_issue)== false){
-			result.push(new_issue[i])
+	for (var i = 0, l = new_list.length; i < l; i++){
+		if (isContains(new_list[i],old_list) == false){
+			result.push(new_list[i])
 		}
 	}
 	return result
@@ -154,10 +135,35 @@ issues.getNewAndShow = function(){
     request_get.dataType = "json";
     request_get.success = function(json){ issues.showNew(json.issues) };
     
-    $.ajax(request_get).fail(function(){
-    	alertNotification('Can\'t connect to '+request_get.url)
-    });	       	
+    httpGet(request_get);
+//    $.ajax(request_get).fail(function(){
+//    	alertNotification('Can\'t connect to '+request_get.url)
+//    });	       	
 }
 
 issues.getNewAndShow()
 setInterval(function(){issues.getNewAndShow()},60000);
+
+//http://xmlhttprequest.ru/
+//http://learn.javascript.ru/json
+function httpGet(request){
+	xmlhttp = new XMLHttpRequest()
+	xmlhttp.open("GET",request.url,true);
+	xmlhttp.send(null);
+	xmlhttp.onreadystatechange = function(){
+		if (xmlhttp.readyState != 4){ return }
+
+		if(xmlhttp.status == 200) {
+			try{
+				json = JSON.parse(xmlhttp.responseText);
+			}catch(err){
+				alertNotification("Error description: " + err.message)	
+			}
+			if (json){ request.success(json) }
+		}else{
+			alertNotification("Can't connect to server")
+		}
+
+
+	}
+}
