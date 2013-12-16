@@ -22,6 +22,7 @@
 	label{width: 30%;
 			text-align: left; padding: .4em 0;display: inline-block;
 	}
+	p{text-align: right}
 	#logo{display: block; width:60%; clear:both; margin-bottom: .5em;}
 	button{border:1px solid black;padding: 1em 2em;float: right}
 </style>
@@ -30,14 +31,18 @@
 	<img src="img/redmine_logo.png">
 </a>
 <settings>
-	<label for="url">URL:</label><input type="text" id='url' placeholder='http://pathto.redmine.com' list="redmine_servers"><br>
+	<p>Basic settings</p>
+	<label for="url">Redmine hostname:</label><input type="text" id='url' placeholder='http://pathto.redmine.com'><br>
 	<label for="key">API key:</label><input type="text" id='key' required><br>
 	<label for="limit">Limit:</label><input type="text" id='limit'><br>
+	<p>Notification filters</p>
 	<label for="assigned_to">Assigned to:</label><input type="text" id='assigned_to'><br>
 	<label for="status">Status:</label><input type="text" id='status'><br>
 	<label for="project">Project:</label><input type="text" id='project'><br>
 	<label for="author">Author:</label><input type="text" id='author'><br>
 	<label for="tracker">Tracker:</label><input type="text" id='tracker'><br>
+	<p>URL detailed setting</p>
+	<label for="advanced_url"><a href="http://www.redmine.org/projects/redmine/wiki/Rest_Issues" target='_blank'>Query string:</a></label><input type="text" id='advanced_url'><br>
 	<div id="info"></div>
 	<button id="save">Save</button>
 </settings>
@@ -45,6 +50,5 @@
 </body>
 
 <script src="options.js"></script>
-<script src="jquery-1.7.1.min.js"></script>
 
 </html>

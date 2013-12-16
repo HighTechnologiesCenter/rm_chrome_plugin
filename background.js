@@ -16,7 +16,7 @@ function alertNotification(message){
 function showNotification(issue){
 // http://developer.chrome.com/extensions/notifications.html
 	if(isMustShow(issue) == false){return}	
-	opt = {}
+	var opt = {}
 	opt.type = "basic"
 	opt.title = '#'+issue.id+' '+issue.subject.toString()+'('+issue.project['name']+')'
 	opt.message = ""
@@ -29,11 +29,11 @@ function showNotification(issue){
     opt.message += 'Author: '+issue.author['name']
     opt.message += '\nStatus: '+issue.status['name']
 	if (issue.assigned_to) {
-    opt.message += '\nAssigned: '+issue.assigned_to['name']	
+    	opt.message += '\nAssigned: '+issue.assigned_to['name']	
   	}
     opt.message += '\nUpdated: '+ new Date(issue.updated_on).toLocaleString()	
 
-	notification = chrome.notifications.create(
+	chrome.notifications.create(
 		issue.id.toString(), 
 		opt ,
 		function(){}
@@ -61,12 +61,9 @@ function valuesFromIssue(issue){
 function isFilteredBy(filter_name, filtering_value){
 	if ( localStorage[filter_name]){
 		filter_words = localStorage[filter_name].toLowerCase().split(',');
-		for (n in filter_words){
-			if (filtering_value.toLowerCase().search(filter_words[n].trim())>-1){
-				return true
-			}
-		}
-		return false
+		return filter_words.some(function(word){
+			return (filtering_value.toLowerCase().search(word.trim()) > -1 && word.trim().length>0);
+		})
 	}
 	return true
 }
@@ -104,7 +101,7 @@ function findNew(new_list, old_list){
 }
 //---------------------------------------------------------
 
-issues = new Object()
+var issues = new Object()
 issues.all = []
 issues.redmine_url = localStorage["url"]
 
@@ -147,7 +144,7 @@ setInterval(function(){issues.getNewAndShow()},60000);
 //http://xmlhttprequest.ru/
 //http://learn.javascript.ru/json
 function httpGet(request){
-	xmlhttp = new XMLHttpRequest()
+	var xmlhttp = new XMLHttpRequest()
 	xmlhttp.open("GET",request.url,true);
 	xmlhttp.send(null);
 	xmlhttp.onreadystatechange = function(){

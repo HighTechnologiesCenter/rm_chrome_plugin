@@ -7,9 +7,10 @@ function save_options() {
   var project_id = document.getElementById("project").value.trim();
   var author = document.getElementById("author").value.trim();
   var tracker = document.getElementById("tracker").value.trim();
+  var advanced_url = document.getElementById("advanced_url").value.trim();
 
   var status = document.getElementById("info");
-  result = ''
+  var result = ''
 
   if (url){
     result += url+'/issues.json'
@@ -26,14 +27,18 @@ function save_options() {
   if (limit){
     result += '&limit='+limit
   };
+
+  if (advanced_url){result += '&'+advanced_url}
+  
+  result += '&sort=updated_on:desc'
+  
+  localStorage["url"] = result;
+
   localStorage["assigned_to"] = assigned_to
   localStorage["status"] = status_id
   localStorage["project"] = project_id
   localStorage["author"] = author
   localStorage["tracker"] = tracker
-
-  result += '&status_id=*&sort=updated_on:desc'
-  localStorage["url"] = result;
 
   // Update status to let user know options were saved.
   status.innerHTML = "Options Saved.<br>"+result;
@@ -56,6 +61,16 @@ function restore_options() {
   }
   document.getElementById("key").value = param_from_url["key"] || ''
   document.getElementById("limit").value = param_from_url["limit"] || ''
+  delete param_from_url["key"]; 
+  delete param_from_url["limit"]; 
+  delete param_from_url["sort"];
+  
+  var d = []
+  for (i in param_from_url){
+    d.push(i+'='+param_from_url[i])
+  }
+
+  document.getElementById("advanced_url").value = d.join('&') || ''
 
   document.getElementById("url").value = head
   document.getElementById("assigned_to").value = localStorage["assigned_to"]||''
