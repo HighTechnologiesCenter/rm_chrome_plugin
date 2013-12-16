@@ -3,7 +3,7 @@ rm_chrome_plugin
 Redmine API chrome extention for showing the notification about new issues  
 Plugin settings:
 ----------------
-**URL:** url to your redmine server  
+**Redmine hostname** url to your redmine server  
 **Api Key:** You can find your API key on your Redmine account page ( /my/account ) when logged in, on the right-hand pane of the default layout.  
 **limit:** number of loaded issues  
 Filter notifications by:  
@@ -12,6 +12,7 @@ Filter notifications by:
 **Project:** projects divided by comma  
 **Author:** authors divided by comma  
 **Tracker:** trackers divided by comma  
+**Query string:** for detailed setting
   
 Useful links:  
 Redmine API
