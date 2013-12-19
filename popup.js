@@ -16,8 +16,6 @@ function formatString(pattern, values){
 	return result
 }
 
-var url = (localStorage["url"]||'.json?').split('.json?')[0]
-
 // values for format string from issue object
 function valuesFromIssue(issue){
 	var values = {'project':issue.project['name'],
@@ -30,7 +28,7 @@ function valuesFromIssue(issue){
 				'updated_on': new Date(issue.updated_on).toLocaleString(),
 				'created_on': new Date(issue.created_on).toLocaleString(),
 				'assigned_to':'',
-				'url':      url,
+				'url':     localStorage['hostname']+'/issues',
 				};
 	if (issue.assigned_to){
 	    values['assigned_to'] = issue.assigned_to.name

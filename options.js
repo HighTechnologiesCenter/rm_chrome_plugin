@@ -1,83 +1,56 @@
 function save_options() {
-  var url = document.getElementById("url").value.trim();
-  var key = document.getElementById("key").value.trim();
-  var limit = document.getElementById("limit").value.trim();
-  var assigned_to = document.getElementById("assigned_to").value.trim();
-  var status_id = document.getElementById("status").value.trim();
-  var project_id = document.getElementById("project").value.trim();
-  var author = document.getElementById("author").value.trim();
-  var tracker = document.getElementById("tracker").value.trim();
-  var advanced_url = document.getElementById("advanced_url").value.trim();
+  var parameter_names = [
+    'limit', 
+    'assigned_to', 
+    'status', 
+    'project',
+    'author',
+    'tracker', 
+    'query_string',
+    'monitor'
+  ]
+  for(i in parameter_names){
+    localStorage[parameter_names[i]] = document.getElementById(parameter_names[i]).value.trim();
+  }
+  info = document.getElementById('info')
 
-  var status = document.getElementById("info");
-  var result = ''
-
-  if (url){
-    result += url+'/issues.json'
+  if (document.getElementById('hostname').value.trim()){
+    localStorage['hostname'] = document.getElementById('hostname').value.trim();
   } else {
     status.innerHTML = "You must enter URL"
     return
   };
-  if (key){
-    result += '?key='+key
+  if (document.getElementById('apikey').value.trim()){
+    localStorage['apikey'] = document.getElementById('apikey').value.trim();
   } else {
     status.innerHTML = "You must enter KEY"
     return
   };
-  if (limit){
-    result += '&limit='+limit
-  };
-
-  if (advanced_url){result += '&'+advanced_url}
-  
-  result += '&sort=updated_on:desc'
-  
-  localStorage["url"] = result;
-
-  localStorage["assigned_to"] = assigned_to
-  localStorage["status"] = status_id
-  localStorage["project"] = project_id
-  localStorage["author"] = author
-  localStorage["tracker"] = tracker
 
   // Update status to let user know options were saved.
-  status.innerHTML = "Options Saved.<br>"+result;
+
+  info.innerHTML = "Options Saved";
   setTimeout(function() {
-    status.innerHTML = "";
+    info.innerHTML = "";
   }, 5000);
 }
 //------------------------------------------------------------
 function restore_options() {
-  var rm_url = localStorage["url"];
-  if (!rm_url) {
-    return;
+  var parameter_names = [
+    'hostname',
+    'apikey',
+    'limit', 
+    'assigned_to', 
+    'status', 
+    'project',
+    'author',
+    'tracker', 
+    'query_string',
+    'monitor'
+  ]
+  for(i in parameter_names){
+    document.getElementById(parameter_names[i]).value = localStorage[parameter_names[i]]||''
   }
-  
-  var head = rm_url.split('/issues.json?')[0];
-  var splited_tail = rm_url.split('?')[1].split('&');
-  var param_from_url = {}
-  for (i in splited_tail){
-    param_from_url[splited_tail[i].split('=')[0]] = splited_tail[i].split('=')[1]
-  }
-  document.getElementById("key").value = param_from_url["key"] || ''
-  document.getElementById("limit").value = param_from_url["limit"] || ''
-  delete param_from_url["key"]; 
-  delete param_from_url["limit"]; 
-  delete param_from_url["sort"];
-  
-  var d = []
-  for (i in param_from_url){
-    d.push(i+'='+param_from_url[i])
-  }
-
-  document.getElementById("advanced_url").value = d.join('&') || ''
-
-  document.getElementById("url").value = head
-  document.getElementById("assigned_to").value = localStorage["assigned_to"]||''
-  document.getElementById("status").value = localStorage["status"]||''
-  document.getElementById("project").value = localStorage["project"]||''
-  document.getElementById("author").value = localStorage["author"]||''
-  document.getElementById("tracker").value = localStorage["tracker"]||''
 
 }
 

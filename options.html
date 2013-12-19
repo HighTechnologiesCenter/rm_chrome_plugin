@@ -32,8 +32,8 @@
 </a>
 <settings>
 	<p>Basic settings</p>
-	<label for="url">Redmine hostname:</label><input type="text" id='url' placeholder='http://pathto.redmine.com'><br>
-	<label for="key">API key:</label><input type="text" id='key' required><br>
+	<label for="hostname">Redmine hostname:</label><input type="text" id='hostname' placeholder='http://pathto.redmine.com' required><br>
+	<label for="apikey">API key:</label><input type="text" id='apikey' required><br>
 	<label for="limit">Limit:</label><input type="text" id='limit'><br>
 	<p>Notification filters</p>
 	<label for="assigned_to">Assigned to:</label><input type="text" id='assigned_to'><br>
@@ -41,8 +41,9 @@
 	<label for="project">Project:</label><input type="text" id='project'><br>
 	<label for="author">Author:</label><input type="text" id='author'><br>
 	<label for="tracker">Tracker:</label><input type="text" id='tracker'><br>
+	<label for="monitor">Watch Issue:</label><input type="text" id='monitor'><br>
 	<p>URL detailed setting</p>
-	<label for="advanced_url"><a href="http://www.redmine.org/projects/redmine/wiki/Rest_Issues" target='_blank'>Query string:</a></label><input type="text" id='advanced_url'><br>
+	<label for="query_string"><a href="http://www.redmine.org/projects/redmine/wiki/Rest_Issues" target='_blank'>Query string:</a></label><input type="text" id='query_string'><br>
 	<div id="info"></div>
 	<button id="save">Save</button>
 </settings>
