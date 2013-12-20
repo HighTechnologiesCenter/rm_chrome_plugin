@@ -1,8 +1,12 @@
 <html>
 <head><title>Redmine Notificator options</title></head>
 <style>
-	img{width: 100%}
-
+	body {
+		padding: 1em;
+		font-family: sans-serif; 
+		font-size: 1em
+	}
+	#logo > img{width: 100%}
 	settings{display: inline-block;width: 60%}
 	input{
 		display: inline-block;
@@ -13,43 +17,37 @@
 		margin: .3em 0;
 		padding: .4em;
 	}
-
-	body {
-		padding: 1em;
-		font-family: sans-serif; 
-		font-size: 1em
-	}
 	label{width: 30%;
 			text-align: left; padding: .4em 0;display: inline-block;
 	}
 	p{text-align: right}
 	#logo{display: block; width:60%; clear:both; margin-bottom: .5em;}
-	button{border:1px solid black;padding: 1em 2em;float: right}
+	#info{display: inline-block}
+	button{display: inline-block;border:1px solid black;padding: 1em 2em;float: right}
 </style>
 <body>
-<a id='logo' href="http://www.redmine.org/projects/redmine/wiki/Rest_api">
+<a id='logo' href="http://www.redmine.org/">
 	<img src="img/redmine_logo.png">
 </a>
 <settings>
 	<p>Basic settings</p>
-	<label for="hostname">Redmine hostname:</label><input type="text" id='hostname' placeholder='http://pathto.redmine.com' required><br>
-	<label for="apikey">API key:</label><input type="text" id='apikey' required><br>
+	<label for="hostname">Redmine hostname:</label><input type="text" id='hostname' placeholder='http://pathto.redmine.com'><br>
+	<label for="apikey">API key:</label><input type="text" id='apikey'><br>
 	<label for="limit">Limit:</label><input type="text" id='limit'><br>
-	<p>Notification filters</p>
+	<p>Notification filter</p>
 	<label for="assigned_to">Assigned to:</label><input type="text" id='assigned_to'><br>
 	<label for="status">Status:</label><input type="text" id='status'><br>
 	<label for="project">Project:</label><input type="text" id='project'><br>
 	<label for="author">Author:</label><input type="text" id='author'><br>
 	<label for="tracker">Tracker:</label><input type="text" id='tracker'><br>
-	<label for="monitor">Watch Issue:</label><input type="text" id='monitor'><br>
+	<p>Watch</p>
+	<label for="watch_issues">Issues:</label><input type="text" id='watch_issues'><br>
+	<label for="watch_project">Project:</label><input type="text" id='watch_project'><br>
 	<p>URL detailed setting</p>
 	<label for="query_string"><a href="http://www.redmine.org/projects/redmine/wiki/Rest_Issues" target='_blank'>Query string:</a></label><input type="text" id='query_string'><br>
 	<div id="info"></div>
 	<button id="save">Save</button>
 </settings>
-
 </body>
-
 <script src="options.js"></script>
-
 </html>

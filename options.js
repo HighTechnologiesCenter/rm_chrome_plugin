@@ -1,5 +1,4 @@
-function save_options() {
-  var parameter_names = [
+var parameter_names = [
     'limit', 
     'assigned_to', 
     'status', 
@@ -7,8 +6,12 @@ function save_options() {
     'author',
     'tracker', 
     'query_string',
-    'monitor'
+    'watch_issues',
+    'watch_project'
   ]
+
+function save_options() {
+
   for(i in parameter_names){
     localStorage[parameter_names[i]] = document.getElementById(parameter_names[i]).value.trim();
   }
@@ -17,13 +20,13 @@ function save_options() {
   if (document.getElementById('hostname').value.trim()){
     localStorage['hostname'] = document.getElementById('hostname').value.trim();
   } else {
-    status.innerHTML = "You must enter URL"
+    info.innerHTML = "You must enter hostname"
     return
   };
   if (document.getElementById('apikey').value.trim()){
     localStorage['apikey'] = document.getElementById('apikey').value.trim();
   } else {
-    status.innerHTML = "You must enter KEY"
+    info.innerHTML = "You must enter KEY"
     return
   };
 
@@ -36,20 +39,11 @@ function save_options() {
 }
 //------------------------------------------------------------
 function restore_options() {
-  var parameter_names = [
-    'hostname',
-    'apikey',
-    'limit', 
-    'assigned_to', 
-    'status', 
-    'project',
-    'author',
-    'tracker', 
-    'query_string',
-    'monitor'
-  ]
+  parameter_names.push('hostname');
+  parameter_names.push('apikey');
+
   for(i in parameter_names){
-    document.getElementById(parameter_names[i]).value = localStorage[parameter_names[i]]||''
+    document.getElementById(parameter_names[i]).value = localStorage[parameter_names[i]] || ''
   }
 
 }

@@ -26,9 +26,7 @@ function showNotification(issue){
 //	var body = ''
     opt.message += 'Author: '+issue.author['name']
     opt.message += '\nStatus: '+issue.status['name']
-	if (issue.assigned_to) {
-    	opt.message += '\nAssigned: '+issue.assigned_to['name']	
-  	}
+   	opt.message += (issue.assigned_to) ? '\nAssigned: '+issue.assigned_to['name'] : ''
     opt.message += '\nUpdated: '+ new Date(issue.updated_on).toLocaleString()	
 
 	chrome.notifications.create(
@@ -38,20 +36,6 @@ function showNotification(issue){
 	) 
 }
 //=================== filter =======================
-function valuesFromIssue(issue){
-	var values = {
-		'project':  issue.project.name,
-	   	'tracker':  issue.tracker.name,
-		'status':   issue.status.name,
-		'author':   issue.author.name,
-		'assigned_to':'',
-	};
-	if (issue.assigned_to){
-	    values['assigned_to'] = issue.assigned_to.name
-	};
-	return values
-}
-
 function isContainWordsFrom(comma_separated_words, filtering_value){
 	if ( comma_separated_words ){
 		words = comma_separated_words.toLowerCase().split(',');
@@ -63,12 +47,21 @@ function isContainWordsFrom(comma_separated_words, filtering_value){
 }
 
 function isShow(issue){
-	if(localStorage['monitor']&&isContainWordsFrom(localStorage['monitor'], issue.id.toString())){
+	if(localStorage['watch_issues']&&isContainWordsFrom(localStorage['watch_issues'], issue.id.toString())){
 		return true
 	}
-	var filters = valuesFromIssue(issue)
-	for (filter_name in filters){
+	if(localStorage['watch_project']&&isContainWordsFrom(localStorage['watch_project'], issue.id.toString())){
+		return true
+	}
+	var filters = {
+		'project':  issue.project.name,
+	   	'tracker':  issue.tracker.name,
+		'status':   issue.status.name,
+		'author':   issue.author.name,
+		'assigned_to': (issue.assigned_to) ? issue.assigned_to.name : '',
+	};
 
+	for (filter_name in filters){
 		if(!isContainWordsFrom(localStorage[filter_name], filters[filter_name])){
 			return false
 		}
@@ -105,6 +98,7 @@ issues.redmine_url = urlFromlocalStorage(localStorage)
 
 // Show all new issues and refresh issues.all
 issues.showNew = function(downloaded_issues){
+	//Checking for basic settings change
 	if (this.redmine_url != urlFromlocalStorage(localStorage)){
 		this.redmine_url = urlFromlocalStorage(localStorage);
 		this.all = downloaded_issues;
@@ -113,8 +107,8 @@ issues.showNew = function(downloaded_issues){
 	if (this.all.length != 0){ 
 		var new_issues = findNew(downloaded_issues, this.all);
 		for (var i = 0, l = new_issues.length; i < l; i++){
-			if (isShow(new_issues[i])){
-				showNotification(new_issues[i]);
+			if ( isShow(new_issues[i]) ){
+				showNotification( new_issues[i] );
 			}
 		};
 	};
@@ -143,7 +137,7 @@ setInterval(function(){issues.getNewAndShow()},60000);
 
 function urlFromlocalStorage(localStorage){
 	var out = localStorage['hostname']+'/issues.json?sort=updated_on:desc';
-	if (localStorage['limit']){out+= '&limit='+localStorage['limit']};
+	out += (localStorage['limit']) ? '&limit='+localStorage['limit'] : '';
 	if (localStorage['query_string']){out+= '&'+localStorage['query_string']};
 	return out
 }
@@ -167,7 +161,7 @@ function httpGet(request){
 			}
 			if (json){ request.success(json) }
 		}else{
-			alertNotification("Can't connect to server. Status:"+xmlhttp.statusText)
+			alertNotification("Can't connect to server.\nStatus: " + xmlhttp.statusText)
 		}
 
 
