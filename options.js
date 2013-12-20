@@ -39,11 +39,12 @@ function save_options() {
 }
 //------------------------------------------------------------
 function restore_options() {
-  parameter_names.push('hostname');
-  parameter_names.push('apikey');
+  var parameters = parameter_names
+  parameters.push('hostname');
+  parameters.push('apikey');
 
-  for(i in parameter_names){
-    document.getElementById(parameter_names[i]).value = localStorage[parameter_names[i]] || ''
+  for(i in parameters){
+    document.getElementById(parameters[i]).value = localStorage[parameters[i]] || ''
   }
 
 }
