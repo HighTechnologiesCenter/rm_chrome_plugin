@@ -7,7 +7,8 @@ var parameter_names = [
     'tracker', 
     'query_string',
     'watch_issues',
-    'watch_project'
+    'watch_project',
+    'watch_author'
   ]
 
 function save_options() {

@@ -27,12 +27,9 @@ function valuesFromIssue(issue){
 				'description':issue.description,
 				'updated_on': new Date(issue.updated_on).toLocaleString(),
 				'created_on': new Date(issue.created_on).toLocaleString(),
-				'assigned_to':'',
+				'assigned_to': (issue.assigned_to) ? issue.assigned_to.name : '',
 				'url':     localStorage['hostname']+'/issues',
 				};
-	if (issue.assigned_to){
-	    values['assigned_to'] = issue.assigned_to.name
-	};
 	return values
 }
 

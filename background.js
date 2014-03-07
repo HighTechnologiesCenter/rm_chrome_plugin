@@ -11,20 +11,17 @@ function alertNotification(message){
 	setTimeout(function(){notification.cancel()}, 5000)
 }
 
-//notification for new issue
+//notification for issue
 function showNotification(issue){
 // http://developer.chrome.com/extensions/notifications.html
 	var opt = {}
 	opt.type = "basic"
 	opt.title = '#'+issue.id+' '+issue.subject.toString()+'('+issue.project['name']+')'
-	opt.message = ""
 	opt.buttons = [{title:'Open',iconUrl:''}]
-//	opt.contextMessage:'',
 //		icon from manifest.json
 	opt.iconUrl = chrome.app.getDetails().icons[48]
 
-//	var body = ''
-    opt.message += 'Author: '+issue.author['name']
+    opt.message = 'Author: '+issue.author['name']
     opt.message += '\nStatus: '+issue.status['name']
    	opt.message += (issue.assigned_to) ? '\nAssigned: '+issue.assigned_to['name'] : ''
     opt.message += '\nUpdated: '+ new Date(issue.updated_on).toLocaleString()	
@@ -47,18 +44,26 @@ function isContainWordsFrom(comma_separated_words, filtering_value){
 }
 
 function isShow(issue){
-	if(localStorage['watch_issues']&&isContainWordsFrom(localStorage['watch_issues'], issue.id.toString())){
-		return true
+	// Watch
+	var watchers = {
+		'watch_issues':issue.id.toString(),
+		'watch_project':issue.project.name,
+		'watch_author':issue.author.name
 	}
-	if(localStorage['watch_project']&&isContainWordsFrom(localStorage['watch_project'], issue.id.toString())){
-		return true
+
+	for (watch in  watchers){
+		if( localStorage[watch]&&isContainWordsFrom(localStorage[watch], watchers[watch]) ){
+			return true
+		}
 	}
+
+	// Filter
 	var filters = {
 		'project':  issue.project.name,
 	   	'tracker':  issue.tracker.name,
 		'status':   issue.status.name,
 		'author':   issue.author.name,
-		'assigned_to': (issue.assigned_to) ? issue.assigned_to.name : '',
+		'assigned_to': (issue.assigned_to) ? issue.assigned_to.name : ''
 	};
 
 	for (filter_name in filters){
@@ -68,55 +73,11 @@ function isShow(issue){
 	}
 	return true
 }
+
 //============================================================
-// Check that object a is in list of object b
-function isContains(a,b){
-	for (var i = 0, l = b.length; i < l; i++){
-		if (a.id == b[i].id&&a.updated_on==b[i].updated_on){
-			return true
-		}
-	};
-	return false;
-}
-//-------------------------------------------------------
-// Find difference for list:new_issue and list:old_issue
-function findNew(new_list, old_list){
-	
-	var result = []
-	for (var i = 0, l = new_list.length; i < l; i++){
-		if (isContains(new_list[i],old_list) == false){
-			result.push(new_list[i])
-		}
-	}
-	return result
-}
-//---------------------------------------------------------
-
-var issues = new Object()
-issues.all = []
-issues.redmine_url = urlFromlocalStorage(localStorage)
-
-// Show all new issues and refresh issues.all
-issues.showNew = function(downloaded_issues){
-	//Checking for basic settings change
-	if (this.redmine_url != urlFromlocalStorage(localStorage)){
-		this.redmine_url = urlFromlocalStorage(localStorage);
-		this.all = downloaded_issues;
-		return
-	}
-	if (this.all.length != 0){ 
-		var new_issues = findNew(downloaded_issues, this.all);
-		for (var i = 0, l = new_issues.length; i < l; i++){
-			if ( isShow(new_issues[i]) ){
-				showNotification( new_issues[i] );
-			}
-		};
-	};
-	this.all = downloaded_issues;
-}
-// Download new issues and show all new.
-issues.getNewAndShow = function(){
-	if (!localStorage["hostname"]||!localStorage["key"]) {
+// Download new issues and execute function show .
+function downloadIssuesAnd(show){
+	if (!localStorage["hostname"] || !localStorage["key"]) {
 		//alertNotification('You must fill URL field in settings');
 		return
 	};
@@ -124,17 +85,52 @@ issues.getNewAndShow = function(){
 	var request_get = {};
     request_get.url = urlFromlocalStorage(localStorage);
     request_get.dataType = "json";
-    request_get.success = function(json){ issues.showNew(json.issues) };
+    request_get.success = function(json){ show(json.issues) };
     
     httpGet(request_get);
-//    $.ajax(request_get).fail(function(){
-//    	alertNotification('Can\'t connect to '+request_get.url)
-//    });	       	
+}
+//============================================================
+var issues = new Object()
+issues.all = []
+issues.redmine_url = urlFromlocalStorage(localStorage)
+
+//============================================================
+// Check that object a is in list of issues
+issues.isNotContains = function(a){
+	for (var i = 0, l = this.all.length; i < l; i++){
+		if (a.id == this.all[i].id && a.updated_on==this.all[i].updated_on){
+			return false
+		}
+	};
+	return true;
+}
+issues.updateFrom = function(downloaded_issues){
+	var result = []
+	//Checking for basic settings change
+	if (this.redmine_url != urlFromlocalStorage(localStorage) || this.all.length == 0){
+		this.redmine_url = urlFromlocalStorage(localStorage);
+		this.all = downloaded_issues;
+		return result
+	}
+
+	for (var i = 0, l = downloaded_issues.length; i < l; i++){
+		if ( this.isNotContains(downloaded_issues[i]) ){
+			result.push(downloaded_issues[i])
+		}
+	}
+	
+	this.all = downloaded_issues;
+	return result
+}
+//=============================================================
+function showNewFiltred(downloaded_issues){ 
+	issues.updateFrom(downloaded_issues).filter(isShow).map(showNotification) 
 }
 
-issues.getNewAndShow()
-setInterval(function(){issues.getNewAndShow()},60000);
+downloadIssuesAnd(showNewFiltred)
+setInterval(function(){ downloadIssuesAnd(showNewFiltred) },60000);
 
+//============================================================
 function urlFromlocalStorage(localStorage){
 	var out = localStorage['hostname']+'/issues.json?sort=updated_on:desc';
 	out += (localStorage['limit']) ? '&limit='+localStorage['limit'] : '';
@@ -161,7 +157,7 @@ function httpGet(request){
 			}
 			if (json){ request.success(json) }
 		}else{
-			alertNotification("Can't connect to server.\nStatus: " + xmlhttp.statusText)
+			alertNotification("Can't connect to server.\nStatus: " + xmlhttp.status.toString() + ' ('+xmlhttp.statusText+')')
 		}
 
 
